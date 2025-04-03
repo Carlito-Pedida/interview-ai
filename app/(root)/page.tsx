@@ -13,8 +13,8 @@ const Page = async () => {
   const user = await getCurrentUser();
 
   const [userInterviews, latestInterviews] = await Promise.all([
-    getInterviewsByUserId(user?.id!),
-    getLatestInterviews({ userId: user?.id! })
+    await getInterviewsByUserId(user?.id!),
+    await getLatestInterviews({ userId: user?.id! })
   ]);
 
   const hasPastInterviews = userInterviews?.length! > 0;
@@ -38,7 +38,7 @@ const Page = async () => {
           alt="robo-dude"
           width={400}
           height={400}
-          className="max-sm:hidden"
+          className="max-sm:hidden "
         />
       </section>
 
@@ -65,7 +65,7 @@ const Page = async () => {
               <InterviewCard {...interview} key={interview.id} />
             ))
           ) : (
-            <p>No interviews available</p>
+            <p>No new interviews available</p>
           )}
         </div>
       </section>
