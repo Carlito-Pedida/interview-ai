@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { vapi } from "@/lib/vapi.sdk";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 enum CallStatus {
   INACTIVE = "INACTIVE",
@@ -32,6 +32,32 @@ const Agent = ({
   const [callStatus, setCallStatus] = useState<CallStatus>(CallStatus.INACTIVE);
   const [messages, setMessages] = useState<SavedMessage[]>([]);
   const [latestMessage, setLatestMessage] = useState<string>("");
+
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+
+  useEffect(() => {
+    const startCamera = async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: true
+        });
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+        }
+      } catch (error) {
+        console.error("Error accessing webcam: ", error);
+      }
+    };
+
+    startCamera();
+
+    return () => {
+      if (videoRef.current && videoRef.current.srcObject) {
+        const stream = videoRef.current.srcObject as MediaStream;
+        stream.getTracks().forEach((track) => track.stop());
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const onCallStart = () => setCallStatus(CallStatus.ACTIVE);
@@ -163,11 +189,17 @@ const Agent = ({
         <div className="card-border">
           <div className="card-content">
             <div className="avatar">
-              <Image
+              {/* <Image
                 src="/user-avatar.png"
                 alt="user-avatar"
                 width={540}
                 height={540}
+                className="rounded-full object-cover size-[120px]"
+              /> */}
+              <video
+                ref={videoRef}
+                autoPlay
+                playsInline
                 className="rounded-full object-cover size-[120px]"
               />
             </div>

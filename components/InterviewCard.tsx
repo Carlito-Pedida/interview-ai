@@ -32,6 +32,8 @@ const InterviewCard = async ({
             <p className="badge-text"> {normalizedType}</p>
           </div>
 
+          {/* <DisplayTechIcons techStack={techstack} /> */}
+
           <Image
             src={getRandomInterviewCover()}
             alt="cover image"
@@ -65,8 +67,6 @@ const InterviewCard = async ({
         </div>
 
         <div className="flex flex-row justify-between">
-          <DisplayTechIcons techStack={techstack} />
-
           <Button className="btn-primary">
             <Link
               href={feedback ? `/interview/${id}/feedback` : `/interview/${id}`}
